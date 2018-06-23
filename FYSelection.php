@@ -7,13 +7,13 @@
 		{
 			 die("Connection failed: " . $conn->connect_error);
 		}
-		$sql = "SELECT id,fy FROM financialyear";
-		$result = $conn->query($sql);
+//		$sql = "SELECT id,fy FROM financialyear";
+//		$result = $conn->query($sql);
 		
 		$sql1 = "SELECT id,companyName FROM company";
 		$result1 = $conn->query($sql1);
 
-		$count=0;
+		//$count=0;
 		
 
 ?>
@@ -41,7 +41,36 @@
 		<![endif]-->
 		<link rel="stylesheet" href="assets/css/ace-rtl.min.css" />
 
-		
+		<!--  -->
+		<script type="text/javascript">
+		function showUser(str) {
+    		if (str == "") {
+        		document.getElementById("fyid").innerHTML = "";
+        		return;
+    		}
+    		else { 
+        		if (window.XMLHttpRequest) {
+            	// code for IE7+, Firefox, Chrome, Opera, Safari
+            	xmlhttp = new XMLHttpRequest();
+        	} 
+        	else {
+            // code for IE6, IE5
+            	xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("fyid").innerHTML = this.responseText;
+            }
+        };
+        //document.write(str);
+        xmlhttp.open("GET","getFY.php ? cn="+str,true);
+        xmlhttp.send();
+    }
+}
+</script>
+
+
 	</head>
 
 	<body class="login-layout">
@@ -72,31 +101,11 @@
 
 											<form action="dashboard.php" method="post">
 												<fieldset>
-													<label class="block clearfix">
-														<span class="block input-icon input-icon-right">
-															<label for="form-field-select-1"><b>Financial Year :</b></label>
-															<select class="form-control" id="form-field-select-1" name="financialyear" required>
-																<option value="">Select Financial Year</option>
-																<?php 
-																	while($row=mysqli_fetch_array($result))
-																	{
-																		$id=$row['id'];
-																		$fy=$row['fy'];
-																		$count++;
-																		
-																?>
-																<option value="<?php echo $fy;?>"><?php echo $fy;?></option>
-																<?php			
-																	}	
-																?>
-															</select>
-														</span>
-													</label>
-
+													
 													<label class="block clearfix">
 														<span class="block input-icon input-icon-right">
 															<label for="form-field-select-2"><b>Company Name :</b></label>
-															<select class="form-control" id="form-field-select-2" name="companyname" required>
+															<select class="form-control" id="form-field-select-2" name="companyname" required onchange="showUser(this.value)">
 																<option value="">Select Company Name</option>
 																<?php 
 																	while($row=mysqli_fetch_array($result1))
@@ -113,6 +122,12 @@
 															</select>
 														</span>
 													</label>
+
+													<div id = "fyid">
+
+													</div>
+
+
 
 													<div class="space"></div>
 
